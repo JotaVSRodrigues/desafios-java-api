@@ -3,7 +3,7 @@ package org.example;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.example.auth.Auth;
-import org.example.exception.InvalidGithubSearch;
+import org.example.exception.ErroConsultaGitHubException;
 import org.example.models.GitHubUser;
 
 import java.io.IOException;
@@ -21,10 +21,10 @@ public class Main {
 
         try {
             Auth auth = new Auth();
-            Gson gson = new Gson();
+            Gson GSON = new Gson();
 
             String json = auth.consultarUsuarios(username);
-            GitHubUser user = gson.fromJson(json, GitHubUser.class);
+            GitHubUser user = GSON.fromJson(json, GitHubUser.class);
 
             System.out.println("=== Perfil do GitHub ===");
             System.out.println("Login:          " + auth.safe(user.login()));
@@ -37,8 +37,8 @@ public class Main {
             System.out.println("Seguindo:       " + auth.safeInt(user.following()));
             System.out.println("URL do perfil:  " + auth.safe(user.html_url()));
 
-        } catch (InvalidGithubSearch e){
-            System.out.println("Erro na busca: " + e.getMessage());
+        } catch (ErroConsultaGitHubException e) {
+            System.out.println("Ops! Não achei esse usuário no GitHub. Verifique o nome e tente novamente.");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

@@ -1,6 +1,6 @@
 package org.example.auth;
 
-import org.example.exception.InvalidGithubSearch;
+import org.example.exception.ErroConsultaGitHubException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -19,7 +19,7 @@ public class Auth {
     public String consultarUsuarios(String username) throws IOException, InterruptedException {
         // formata o nome de usuário no padrão UTF-8 de URL
         String encoded = URLEncoder.encode(username, StandardCharsets.UTF_8);
-        String url = "http://api.github.com/users/" + encoded;
+        String url = "https://api.github.com/users/" + encoded;
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -32,7 +32,7 @@ public class Auth {
         int code = response.statusCode();
 
         if (code == 404){
-            throw new InvalidGithubSearch("Usuario " + username + "não encontrado - " + code);
+            throw new ErroConsultaGitHubException("Usuário '" + username + "' não encontrado (HTTP 404).");
         }
 
         if (code >= 400){
